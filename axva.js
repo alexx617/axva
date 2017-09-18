@@ -194,8 +194,9 @@ function va() {
       var item_ = []; //需要验证的项目
       for (let j in ruleValidate[formName[i]]) {
         item_.push(j)
-      }
-      optionalRule.push(new Rule(ruleValidate[formName[i]], value_, formMsg[i], item_, formData, formName[i], el_dom[i]));
+	  }
+	  var itemname = formName[i];
+	  optionalRule[itemname] = new Rule(ruleValidate[formName[i]], value_, formMsg[i], item_, formData, formName[i], el_dom[i]);
     }
   }
   log(optionalRule)
