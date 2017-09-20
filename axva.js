@@ -59,11 +59,11 @@ function noEmpty(value) {
 }
 //检测最大值
 function max(value, rule) {
-  return value <= rule ? true : false;
+  return value.length <= rule ? true : false;
 }
 //检测最小值
 function min(value, rule) {
-  return value >= rule ? true : false;
+  return value.length >= rule ? true : false;
 }
 //检测正则
 function type(value, rule) {
