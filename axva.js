@@ -201,14 +201,29 @@ function va() {
   }
   log(optionalRule)
   vm[item_form + '_valid'] = optionalRule;
-  validate = optionalRule.every(x => { //最终结果全部项目是否校验正确
-    return x.pass;
-  });
+  var firstErr = null;
+  for(var i in optionalRule){
+    if(firstErr===null&&optionalRule[i].pass===false){
+      validate.validate=false;
+      validate.errMsg=optionalRule[i].errMsg;
+      firstErr=optionalRule[i].errMsg;
+      break;
+    }else{
+      validate.validate=true;
+      validate.errMsg='';
+    }
+  }
+  // validate = optionalRule.every(x => { //最终结果全部项目是否校验正确
+  //   return x.pass;
+  // });
 }
 
 var MyPlugin = {};
 var errClass = ''; //错误提示的class
-var validate = ''; //最终结果
+var validate = {
+  validate:'',
+  errMsg:null
+}; //最终结果
 var el_;
 var binding_;
 var vnode_;
