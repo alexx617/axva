@@ -4,7 +4,7 @@ const log = console.log;
 function addClass(dom, errClass) {
   var hasClass = !!dom.className.match(errClass)
   if (!hasClass) {
-    dom.className += errClass;
+    dom.className += ' '+ errClass;
   }
 }
 // 检验正确后去除错误class
