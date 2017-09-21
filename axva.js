@@ -55,6 +55,7 @@ var regList = {
 // 4.检测
 //检测非空
 function noEmpty(value) {
+  log(value)
   return value.toString().trim() ? true : false
 }
 //检测最大值
@@ -190,7 +191,8 @@ function va() {
   }
   for (let i = 0; i < formName.length; i++) {
     if (ruleValidate[formName[i]]) { //验证规则
-      var value_ = formData[formName[i]];
+      var value_ = formData[formName[i]] || '';
+      log(value_)
       var item_ = []; //需要验证的项目
       for (let j in ruleValidate[formName[i]]) {
         item_.push(j)
@@ -230,14 +232,14 @@ var vnode_;
 var oldVnode_;
 MyPlugin.install = function (Vue, options) {
   Vue.directive('va', {
-      bind(el, binding, vnode, oldVnode) {
-        el_ = el;
-        binding_ = binding;
-        vnode_ = vnode;
-        oldVnode_ = oldVnode;
-        va();
-      },
-      update(el, binding, vnode, oldVnode) {
+      // bind(el, binding, vnode, oldVnode) {
+      //   el_ = el;
+      //   binding_ = binding;
+      //   vnode_ = vnode;
+      //   oldVnode_ = oldVnode;
+      //   va();
+      // },
+      componentUpdated(el, binding, vnode, oldVnode) {
         el_ = el;
         binding_ = binding;
         vnode_ = vnode;
