@@ -55,7 +55,6 @@ var regList = {
 // 4.检测
 //检测非空
 function noEmpty(value) {
-  log(value)
   return value.toString().trim() ? true : false
 }
 //检测最大值
@@ -192,7 +191,6 @@ function va() {
   for (let i = 0; i < formName.length; i++) {
     if (ruleValidate[formName[i]]) { //验证规则
       var value_ = formData[formName[i]] || '';
-      log(value_)
       var item_ = []; //需要验证的项目
       for (let j in ruleValidate[formName[i]]) {
         item_.push(j)
@@ -226,6 +224,7 @@ var validate = {
   validate:'',
   errMsg:null
 }; //最终结果
+var canCheck = false;
 var el_;
 var binding_;
 var vnode_;
@@ -244,11 +243,18 @@ MyPlugin.install = function (Vue, options) {
         binding_ = binding;
         vnode_ = vnode;
         oldVnode_ = oldVnode;
-        va();
+        // if(canCheck){
+          va();
+        // }
       }
     }),
     Vue.prototype.$axva = function () {
       return validate;
+    }
+    Vue.prototype.$axvaCheck = function (me) {
+      if(me){
+        canCheck = me;
+      }
     }
 }
 
