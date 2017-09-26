@@ -1,8 +1,8 @@
 {
   "name": "axva",
-  "version": "0.0.19",
+  "version": "0.0.23",
   "description": "",
-  "main": "axva.js",
+  "main": "axva.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node ./build.js"
@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/alexx617/axva/issues"
   },
-  "homepage": "https://github.com/alexx617/axva#readme"  
+  "homepage": "https://github.com/alexx617/axva#readme",
+  "devDependencies": {
+    "axtool": "^1.0.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^2.0.0-beta.1",
+    "uglify-js": "^3.1.2"
+  }
 }

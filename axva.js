@@ -17,21 +17,21 @@ function removeClass(dom, errClass) {
 
 // 没给class的话默认显示错误DOM,检验错误的话添加DOM
 function appendChild(dom, errMsg, formName) {
-  var hasClass = !!dom.className.match(`axva-${formName}`)
+  var hasClass = !!dom.className.match('axva-'+formName)
   if (!hasClass) {
-    dom.className += `axva-${formName}`;
+    dom.className += 'axva-'+formName;
     var p = document.createElement("p");
     p.innerHTML = errMsg;
-    p.setAttribute('class', `axva-${formName}-err`)
+    p.setAttribute('class', 'axva-'+formName+'-err')
     dom.parentNode.insertBefore(p, dom.nextSibling)
   }
 }
 // 没给class的话默认显示错误DOM,检验正确的话去掉DOM
 function removeChild(dom, errMsg, formName) {
-  var hasClass = !!dom.className.match(`axva-${formName}`)
+  var hasClass = !!dom.className.match('axva-'+formName)
   if (hasClass) {
-    var p = document.getElementsByClassName(`axva-${formName}-err`)[0];
-    dom.className = dom.className.replace(`axva-${formName}`, '');
+    var p = document.getElementsByClassName('axva-'+formName+'-err')[0];
+    dom.className = dom.className.replace('axva-'+formName, '');
     dom.parentNode.removeChild(p);
   }
 }
@@ -121,7 +121,7 @@ function chk(check, ruleType, ruleValue, errMsg, formData, formName) {
   var vaResult = {};
   var firstErr = null;
   var pass = true;
-  check.forEach(item => {
+  check.forEach(function(item) {
     var isPass = checkRule(item, ruleType, ruleValue, formData);
     vaResult[item] = isPass;
     if (firstErr === null && isPass === false) {
@@ -155,25 +155,25 @@ function checkRule(item, ruleType, ruleValue, formData) {
 function getErrMsg(item, errMsg, ruleValue, ruleType) {
   if(local==='cn'){
     var errMsgs = {
-      type: `${errMsg}格式不正确`,
-      noEmpty: `${errMsg}不能为空`,
-      max: `${errMsg}不能大于${ruleType[item]}`,
-      min: `${errMsg}不能小于${ruleType[item]}`,
-      equal: `两次输入的${errMsg}不相同`,
-      unequal: `两次输入的${errMsg}不能相同`,
-      pattern: `${errMsg}${ruleType.message}`,
-      accepted: `${errMsg}${ruleType.message}`,
+      type: errMsg+'格式不正确',
+      noEmpty: errMsg+'不能为空',
+      max: errMsg+' 不能大于 '+ruleType[item],
+      min: errMsg+' 不能小于 '+ruleType[item],
+      equal: '两次输入的'+errMsg+'不相同',
+      unequal: '两次输入的'+errMsg+'不能相同',
+      pattern: errMsg+' '+ruleType.message,
+      accepted: errMsg+' '+ruleType.message,
     }
   } else if(local==='pt'){
     var errMsgs = {
-      type: `Formato incorreto <b>${errMsg}</b>`,
-      noEmpty: `<b>${errMsg}</b> Não pode ser vazio`,
-      max: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
-      min: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
-      equal: `inserir <b>${errMsg}</b> por duas vezes não é equal`,
-      unequal: `inserir <b>${errMsg}</b> por duas vezes não pode ser equal`,
-      pattern: `<b>${errMsg}</b> ${ruleType.message}`,
-      accepted: `<b>${errMsg}</b> ${ruleType.message}`,
+      type: 'Formato incorreto '+ '<b>'+'<b>'+errMsg+'</b>'+'</b>',
+      noEmpty: '<b>'+errMsg+'</b>' + ' Não pode ser vazio',
+      max: '<b>'+errMsg+'</b>' + ' Máximo de '+ruleType[item],
+      min: '<b>'+errMsg+'</b>' + ' Mínimo de '+ruleType[item],
+      equal: 'inserir ' + '<b>'+errMsg+'</b>' + ' por duas vezes não é equal',
+      unequal: 'inserir ' + '<b>'+errMsg+'</b>' + ' por duas vezes não pode ser equal',
+      pattern: '<b>'+errMsg+'</b>'+' '+ruleType.message,
+      accepted: '<b>'+errMsg+'</b>'+' '+ruleType.message,
     }
   }
 
@@ -232,7 +232,7 @@ function va() {
       validate.errMsg='';
     }
   }
-  // validate = optionalRule.every(x => { //最终结果全部项目是否校验正确
+  // validate = optionalRule.every(x { //最终结果全部项目是否校验正确
   //   return x.pass;
   // });
 }
@@ -248,11 +248,11 @@ var binding_;
 var vnode_;
 var oldVnode_;
 var local;
+var canCheck = 'true';
 MyPlugin.install = function (Vue, options = 'cn') {
   local = options;
   Vue.directive('va', {
       bind(el, binding, vnode, oldVnode) {
-        canCheck = 'true';
         el_ = el;
         binding_ = binding;
         vnode_ = vnode;
