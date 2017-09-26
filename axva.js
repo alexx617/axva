@@ -107,8 +107,7 @@ function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
   this.ruleType = ruleType;
   this.ruleValue = ruleValue;
   this.ruleName = formName;
-  log(canCheck)
-  if(canCheck){
+  if(canCheck==='true'){
     if (errClass) { //有给错误class的话,如校验结果为false添加class
       this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
     } else { //否则默认添加错误提示dom
@@ -185,6 +184,7 @@ function va() {
   if(formDOM.attributes["propCheck"]){
     canCheck = formDOM.attributes["propCheck"].value
   }
+  log(canCheck)
   for (var i = 0; i < formDOM.elements.length; i++) { //获取所有需要验证项
     var prop = formDOM.elements[i];
     if (prop.attributes["prop"]) {
@@ -237,7 +237,7 @@ var oldVnode_;
 MyPlugin.install = function (Vue, options) {
   Vue.directive('va', {
       bind(el, binding, vnode, oldVnode) {
-        canCheck = false;
+        canCheck = 'true';
         el_ = el;
         binding_ = binding;
         vnode_ = vnode;
