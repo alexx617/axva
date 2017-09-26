@@ -184,7 +184,6 @@ function va() {
   if(formDOM.attributes["propCheck"]){
     canCheck = formDOM.attributes["propCheck"].value
   }
-  log(canCheck)
   for (var i = 0; i < formDOM.elements.length; i++) { //获取所有需要验证项
     var prop = formDOM.elements[i];
     if (prop.attributes["prop"]) {
