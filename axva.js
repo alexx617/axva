@@ -230,7 +230,6 @@ var validate = {
   validate:'',
   errMsg:null
 }; //最终结果
-var canCheck = false;
 var el_;
 var binding_;
 var vnode_;
@@ -238,6 +237,7 @@ var oldVnode_;
 MyPlugin.install = function (Vue, options) {
   Vue.directive('va', {
       bind(el, binding, vnode, oldVnode) {
+        canCheck = false;
         el_ = el;
         binding_ = binding;
         vnode_ = vnode;
