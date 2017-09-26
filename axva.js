@@ -166,14 +166,14 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
     }
   } else if(local==='pt'){
     var errMsgs = {
-      type: `Formato incorreto ${errMsg}`,
-      noEmpty: `${errMsg} Não pode ser vazio`,
-      max: `${errMsg} Máximo de ${ruleType[item]}`,
-      min: `${errMsg} Mínimo de ${ruleType[item]}`,
-      equal: `inserir ${errMsg} por duas vezes não é equal`,
-      unequal: `inserir ${errMsg} por duas vezes não pode ser equal`,
-      pattern: `${errMsg}${ruleType.message}`,
-      accepted: `${errMsg}${ruleType.message}`,
+      type: `Formato incorreto <b>${errMsg}</b>`,
+      noEmpty: `<b>${errMsg}</b> Não pode ser vazio`,
+      max: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
+      min: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
+      equal: `inserir <b>${errMsg}</b> por duas vezes não é equal`,
+      unequal: `inserir <b>${errMsg}</b> por duas vezes não pode ser equal`,
+      pattern: `<b>${errMsg}</b> ${ruleType.message}`,
+      accepted: `<b>${errMsg}</b> ${ruleType.message}`,
     }
   }
 
