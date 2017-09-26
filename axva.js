@@ -89,7 +89,7 @@ function accepted(value, rule, ruleType, formData) {
 // 断言函数
 function assert(condition, message) {
   if (!condition) {
-    console.error('[va-warn]:' + message)
+    console.error('[axva-warn]:' + message)
   }
 }
 
@@ -107,10 +107,13 @@ function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
   this.ruleType = ruleType;
   this.ruleValue = ruleValue;
   this.ruleName = formName;
-  if (errClass) { //有给错误class的话,如校验结果为false添加class
-    this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
-  } else { //否则默认添加错误提示dom
-    this.errMsg ? appendChild(dom_, chk_[1], formName) : removeChild(dom_, chk_[1], formName);
+  log(canCheck)
+  if(canCheck){
+    if (errClass) { //有给错误class的话,如校验结果为false添加class
+      this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
+    } else { //否则默认添加错误提示dom
+      this.errMsg ? appendChild(dom_, chk_[1], formName) : removeChild(dom_, chk_[1], formName);
+    }
   }
 }
 
@@ -179,6 +182,9 @@ function va() {
   if (formDOM.attributes["errClass"]) { //获取错误的class
     errClass = formDOM.attributes["errClass"].value;
   }
+  if(formDOM.attributes["propCheck"]){
+    canCheck = formDOM.attributes["propCheck"].value
+  }
   for (var i = 0; i < formDOM.elements.length; i++) { //获取所有需要验证项
     var prop = formDOM.elements[i];
     if (prop.attributes["prop"]) {
@@ -231,30 +237,23 @@ var vnode_;
 var oldVnode_;
 MyPlugin.install = function (Vue, options) {
   Vue.directive('va', {
-      // bind(el, binding, vnode, oldVnode) {
-      //   el_ = el;
-      //   binding_ = binding;
-      //   vnode_ = vnode;
-      //   oldVnode_ = oldVnode;
-      //   va();
-      // },
+      bind(el, binding, vnode, oldVnode) {
+        el_ = el;
+        binding_ = binding;
+        vnode_ = vnode;
+        oldVnode_ = oldVnode;
+        va();
+      },
       componentUpdated(el, binding, vnode, oldVnode) {
         el_ = el;
         binding_ = binding;
         vnode_ = vnode;
         oldVnode_ = oldVnode;
-        // if(canCheck){
-          va();
-        // }
+        va();
       }
     }),
     Vue.prototype.$axva = function () {
       return validate;
-    }
-    Vue.prototype.$axvaCheck = function (me) {
-      if(me){
-        canCheck = me;
-      }
     }
 }
 
