@@ -153,16 +153,30 @@ function checkRule(item, ruleType, ruleValue, formData) {
 
 // 5.获得不同的报错信息
 function getErrMsg(item, errMsg, ruleValue, ruleType) {
-  var errMsgs = {
-    type: `${errMsg}格式不正确`,
-    noEmpty: `${errMsg}不能为空`,
-    max: `${errMsg}不能大于${ruleType[item]}`,
-    min: `${errMsg}不能小于${ruleType[item]}`,
-    equal: `两次${errMsg}不相同`,
-    unequal: `${errMsg}不能相同`,
-    pattern: `${errMsg}${ruleType.message}`,
-    accepted: `${errMsg}${ruleType.message}`,
+  if(local==='cn'){
+    var errMsgs = {
+      type: `${errMsg}格式不正确`,
+      noEmpty: `${errMsg}不能为空`,
+      max: `${errMsg}不能大于${ruleType[item]}`,
+      min: `${errMsg}不能小于${ruleType[item]}`,
+      equal: `两次输入的${errMsg}不相同`,
+      unequal: `两次输入的${errMsg}不能相同`,
+      pattern: `${errMsg}${ruleType.message}`,
+      accepted: `${errMsg}${ruleType.message}`,
+    }
+  } else if(local==='pt'){
+    var errMsgs = {
+      type: `Formato incorreto ${errMsg}`,
+      noEmpty: `${errMsg} Não pode ser vazio`,
+      max: `${errMsg} Máximo de ${ruleType[item]}`,
+      min: `${errMsg} Mínimo de ${ruleType[item]}`,
+      equal: `inserir ${errMsg} por duas vezes não é equal`,
+      unequal: `inserir ${errMsg} por duas vezes não pode ser equal`,
+      pattern: `${errMsg}${ruleType.message}`,
+      accepted: `${errMsg}${ruleType.message}`,
+    }
   }
+
   return errMsgs[item]
 }
 
@@ -233,7 +247,9 @@ var el_;
 var binding_;
 var vnode_;
 var oldVnode_;
-MyPlugin.install = function (Vue, options) {
+var local;
+MyPlugin.install = function (Vue, options = 'cn') {
+  local = options;
   Vue.directive('va', {
       bind(el, binding, vnode, oldVnode) {
         canCheck = 'true';
