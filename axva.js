@@ -77,9 +77,13 @@ function equal(value, rule, ruleType, formData) {
 function unequal(value, rule, ruleType, formData) {
   return value !== formData[rule] ? true : false
 }
-//检测自定义规则
+//检测自定义正则
 function pattern(value, rule, ruleType, formData) {
   return rule.test(value) ? true : false
+}
+//检测自定义规则
+function other(value, rule, ruleType, formData) {
+  return rule(value) ? true : false
 }
 //检测必须选择
 function accepted(value, rule, ruleType, formData) {
@@ -143,6 +147,7 @@ function checkRule(item, ruleType, ruleValue, formData) {
     unequal,
     pattern,
     accepted,
+    other,
   }
   if (item !== 'message') {
     var checker = ruleCheckers[item];
@@ -163,6 +168,7 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
       unequal: '两次输入的'+errMsg+'不能相同',
       pattern: errMsg+' '+ruleType.message,
       accepted: errMsg+' '+ruleType.message,
+      other: errMsg+' '+ruleType.message,
     }
   } else if(local==='pt'){
     var errMsgs = {
@@ -174,6 +180,7 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
       unequal: 'inserir ' + '<b>'+errMsg+'</b>' + ' por duas vezes não pode ser equal',
       pattern: '<b>'+errMsg+'</b>'+' '+ruleType.message,
       accepted: '<b>'+errMsg+'</b>'+' '+ruleType.message,
+      other: '<b>'+errMsg+'</b>'+' '+ruleType.message,
     }
   }
 
