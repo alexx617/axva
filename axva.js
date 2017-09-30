@@ -1,4 +1,4 @@
-const log = console.log;
+// const log = console.log;
 
 // 给错误的dom添加错误class
 function addClass(dom, errClass) {
@@ -183,7 +183,6 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
       other: '<b>'+errMsg+'</b>'+' '+ruleType.message,
     }
   }
-
   return errMsgs[item]
 }
 
@@ -221,11 +220,11 @@ function va() {
       for (let j in ruleValidate[formName[i]]) {
         item_.push(j)
 	  }
-	  var itemname = formName[i];
-	  optionalRule[itemname] = new Rule(ruleValidate[formName[i]], value_, formMsg[i], item_, formData, formName[i], el_dom[i]);
+    var itemname = formName[i];
+    optionalRule[itemname] = new Rule(ruleValidate[formName[i]], value_, formMsg[i], item_, formData, formName[i], el_dom[i]);
     }
   }
-  log(optionalRule)
+  // console.log(optionalRule)
   vm[item_form + '_valid'] = optionalRule;
   var firstErr = null;
   for(var i in optionalRule){
