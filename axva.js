@@ -160,27 +160,27 @@ function checkRule(item, ruleType, ruleValue, formData) {
 function getErrMsg(item, errMsg, ruleValue, ruleType) {
   if(local==='cn'){
     var errMsgs = {
-      type: errMsg+'格式不正确',
-      noEmpty: errMsg+'不能为空',
-      max: errMsg+' 不能大于 '+ruleType[item],
-      min: errMsg+' 不能小于 '+ruleType[item],
-      equal: '两次输入的'+errMsg+'不相同',
-      unequal: '两次输入的'+errMsg+'不能相同',
-      pattern: errMsg+' '+ruleType.message,
-      accepted: errMsg+' '+ruleType.message,
-      other: errMsg+' '+ruleType.message,
+      type: `${errMsg}格式不正确`,
+      noEmpty: `${errMsg}不能为空`,
+      max: `${errMsg}不能大于${ruleType[item]}`,
+      min: `${errMsg}不能小于${ruleType[item]}`,
+      equal: `两次输入的${errMsg}不相同`,
+      unequal: `两次输入的${errMsg}不能相同`,
+      pattern: `${errMsg}${ruleType.message}`,
+      accepted: `${errMsg}${ruleType.message}`,
+      other: `${errMsg}${ruleType.message}`,
     }
   } else if(local==='pt'){
     var errMsgs = {
-      type: 'Formato incorreto '+ '<b>'+'<b>'+errMsg+'</b>'+'</b>',
-      noEmpty: '<b>'+errMsg+'</b>' + ' Não pode ser vazio',
-      max: '<b>'+errMsg+'</b>' + ' Máximo de '+ruleType[item],
-      min: '<b>'+errMsg+'</b>' + ' Mínimo de '+ruleType[item],
-      equal: 'inserir ' + '<b>'+errMsg+'</b>' + ' por duas vezes não é equal',
-      unequal: 'inserir ' + '<b>'+errMsg+'</b>' + ' por duas vezes não pode ser equal',
-      pattern: '<b>'+errMsg+'</b>'+' '+ruleType.message,
-      accepted: '<b>'+errMsg+'</b>'+' '+ruleType.message,
-      other: '<b>'+errMsg+'</b>'+' '+ruleType.message,
+      type: `Formato incorreto <b>${errMsg}</b>'`,
+      noEmpty: `<b>${errMsg}</b> Não pode ser vazio`,
+      max: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
+      min: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
+      equal: `inserir <b>${errMsg}</b> por duas vezes não é equal`,
+      unequal: `inserir <b>${errMsg}</b> por duas vezes não pode ser equal`,
+      pattern: `<b>${errMsg}</b> ruleType.message`,
+      accepted: `<b>${errMsg}</b> ruleType.message`,
+      other: `<b>${errMsg}</b> ruleType.message`,
     }
   }
   return errMsgs[item]
