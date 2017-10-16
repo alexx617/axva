@@ -89,6 +89,12 @@ function other(value, rule, ruleType, formData) {
 function accepted(value, rule, ruleType, formData) {
 	return value ? true : false
 }
+//检测是否包含
+function include(value, rule, ruleType, formData) {
+	let list = rule[0];
+	let type = rule[1];
+	return list[formData[type]].includes(value) ? true : false
+}
 
 // 断言函数
 function assert(condition, message) {
@@ -148,6 +154,7 @@ function checkRule(item, ruleType, ruleValue, formData) {
 		pattern,
 		accepted,
 		other,
+		include,
 	}
 	if (item !== 'message') {
 		var checker = ruleCheckers[item];
@@ -169,6 +176,7 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
 			pattern: `${errMsg}${ruleType.message}`,
 			accepted: `${errMsg}${ruleType.message}`,
 			other: `${errMsg}${ruleType.message}`,
+			include: `${errMsg}${ruleType.message}`,
 		}
 	} else if (local === 'pt') {
 		var errMsgs = {
@@ -178,9 +186,10 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
 			min: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
 			equal: `inserir <b>${errMsg}</b> por duas vezes não é equal`,
 			unequal: `inserir <b>${errMsg}</b> por duas vezes não pode ser equal`,
-			pattern: `<b>${errMsg}</b> ruleType.message`,
-			accepted: `<b>${errMsg}</b> ruleType.message`,
-			other: `<b>${errMsg}</b> ruleType.message`,
+			pattern: `<b>${errMsg}</b> ${ruleType.message}`,
+			accepted: `<b>${errMsg}</b> ${ruleType.message}`,
+			other: `<b>${errMsg}</b> ${ruleType.message}`,
+			include: `<b>${errMsg}</b> ${ruleType.message}`,
 		}
 	}
 	return errMsgs[item]
