@@ -1,5 +1,3 @@
-// const log = console.log;
-
 // 给错误的dom添加错误class
 function addClass(dom, errClass) {
 	var hasClass = !!dom.className.match(errClass)
