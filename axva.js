@@ -222,7 +222,10 @@ function va() {
 	}
 	for (let i = 0; i < formName.length; i++) {
 		if (ruleValidate[formName[i]]) { //验证规则
-			var value_ = formData[formName[i]];
+			var value_ = ''
+			if(formData[formName[i]]!=null){
+				value_ = formData[formName[i]];
+			}
 			var item_ = []; //需要验证的项目
 			for (let j in ruleValidate[formName[i]]) {
 				item_.push(j)
