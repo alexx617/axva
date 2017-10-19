@@ -63,6 +63,14 @@ function max(value, rule) {
 function min(value, rule) {
 	return value.length >= rule ? true : false;
 }
+//检测最大数值
+function NumMax(value, rule) {
+	return value <= rule ? true : false;
+}
+//检测最小数值
+function NumMin(value, rule) {
+	return value >= rule ? true : false;
+}
 //检测正则
 function type(value, rule) {
 	return regList[rule].test(value) ? true : false
@@ -149,6 +157,8 @@ function checkRule(item, ruleType, ruleValue, formData) {
 		noEmpty,
 		min,
 		max,
+		NumMax,
+		NumMin,
 		equal,
 		unequal,
 		pattern,
@@ -171,6 +181,8 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
 			noEmpty: `${errMsg}不能为空`,
 			max: `${errMsg}不能大于${ruleType[item]}`,
 			min: `${errMsg}不能小于${ruleType[item]}`,
+			NumMax: `${errMsg}不能大于${ruleType[item]}`,
+			NumMin: `${errMsg}不能小于${ruleType[item]}`,
 			equal: `两次输入的${errMsg}不相同`,
 			unequal: `两次输入的${errMsg}不能相同`,
 			pattern: `${errMsg}${ruleType.message}`,
@@ -184,6 +196,8 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
 			noEmpty: `<b>${errMsg}</b> Não pode ser vazio`,
 			max: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
 			min: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
+			NumMax: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
+			NumMin: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
 			equal: `inserir <b>${errMsg}</b> por duas vezes não é equal`,
 			unequal: `inserir <b>${errMsg}</b> por duas vezes não pode ser equal`,
 			pattern: `<b>${errMsg}</b> ${ruleType.message}`,
