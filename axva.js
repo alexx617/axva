@@ -91,7 +91,9 @@ function accepted(value, rule, ruleType, formData) {
 function include(value, rule, ruleType, formData) {
 	let list = rule[0];
 	let type = rule[1];
-	return list[formData[type]].includes(value) ? true : false
+	if(formData[type]){
+		return list[formData[type]].includes(value) ? true : false
+	}
 }
 
 // 断言函数

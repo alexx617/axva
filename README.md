@@ -32,3 +32,9 @@ prop:('需要验证的项目','显示的报错项目名称')
 
 this.$axva():返回验证结果
 
+检测是否包含:'bancario.contaDesde': { include: [cities, 'bancario.uf'], message: 'Inválido' },//include接收两个参数,第一个是规则,第二个是查找哪个,需要加message
+
+检测是否不相等:'referencias[0].nome': {unequal: 'referencias[1].nome' },//unequal接收一个参数,需要对比的值
+
+
+检测自定义规则:cpf: { other: checkcpf, message: 'Inválido' },//other接收一个参数,自定的规则,需要加message
