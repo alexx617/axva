@@ -1,6 +1,6 @@
 {
   "name": "axva",
-  "version": "0.0.31",
+  "version": "0.0.34",
   "description": "",
   "main": "axva.min.js",
   "scripts": {
@@ -20,6 +20,7 @@
   "devDependencies": {
     "axtool": "^1.0.0",
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
     "babel-preset-env": "^2.0.0-beta.1",
     "uglify-js": "^3.1.2"
   }
