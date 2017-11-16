@@ -140,7 +140,6 @@ function assert(condition, message) {
 // check:需要验证的项目
 // formData:整个表信息
 function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
-    console.log(dom_, ruleValue, formName);
     var chk_ = chk(check, ruleType, ruleValue, errMsg, formData, formName);
     this.check = chk_[0];
     this.errMsg = chk_[1];
@@ -279,7 +278,6 @@ function va() {
             el_dom.push(prop)
         }
     }
-    console.log(el_dom);
 
     for (let i = 0; i < formName.length; i++) {
         let rule = ruleValidate[formName[i]];
@@ -293,9 +291,8 @@ function va() {
             optionalRule[itemname] = new Rule(ruleValidate[itemname], value_, formMsg[i], item_, formData, itemname, el_dom[i]);
             if (rule.split) {
                 let extalItems = split(value_, rule.split, itemname);
-                extalItems.forEach((ele, index) => {
+                extalItems.forEach(function(ele, index) {
                     let _sitem = getValItem(ele.rules);
-                    console.log(ele);
                     let extralItemIndex = findEleByName(el_dom, ele.name);
                     optionalRule[ele.name] = new Rule(ele.rules, ele.value, formMsg[extralItemIndex], _sitem, formData, ele.name, el_dom[extralItemIndex]);
                 });
