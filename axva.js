@@ -37,17 +37,17 @@ function removeChild(dom, errMsg, formName) {
 //常用正则
 var regList = {
     ImgCode: /^[0-9a-zA-Z]{4}$/,
-    SmsCode: /^\d{4}$/,
-    MailCode: /^\d{4}$/,
-    UserName: /^[\w|\d]{4,16}$/,
-    Password: /^[\w!@#$%^&*.]{6,16}$/,
-    Mobile: /^1[3|4|5|7|8]\d{9}$/,
+    SmsCode: /^\d{4}$/,//验证码是否4位数
+    MailCode: /^\d{4}$/,//验证码是否4位数
+    UserName: /^[\w|\d]{4,16}$/,//用户名4-16位
+    Password: /^[\w!@#$%^&*.]{6,16}$/,//密码6-16位
+    Mobile: /^1[3|4|5|7|8]\d{9}$/,//手机号
     RealName: /^[\u4e00-\u9fa5|·]{2,16}$|^[a-zA-Z|\s]{2,20}$/,
-    BankNum: /^\d{10,19}$/,
+    BankNum: /^\d{10,19}$/,//银行卡号码
     Money: /^([1-9]\d*|[0-9]\d*\.\d{1,2}|0)$/,
     Answer: /^\S+$/,
-    Mail: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
-    Number: /^\d+$/,
+    Mail: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,//邮箱
+    Number: /^\d+$/,//必须数字
 }
 
 // 4.检测
@@ -105,25 +105,6 @@ function include(value, rule, ruleType, formData) {
 }
 
 
-function split(value, rule, item) {
-    let splitChar = rule.splitChar || '';
-    let _v = value.split(splitChar);
-    let res = [];
-    for (let i in rule.splits) {
-        let s = rule.splits[i];
-        let _va = '';
-        if (_v && _v.length > 0 && _v[s.index - 1]) {
-            _va = _v[s.index - 1];
-        }
-        res.push({
-            value: _va,
-            name: item + '.' + i,
-            rules: s
-        })
-    }
-    return res;
-}
-
 // 断言函数
 function assert(condition, message) {
     if (!condition) {
@@ -133,7 +114,7 @@ function assert(condition, message) {
 
 
 
-// 1.Rule构造器(最后需要发给form的结果)
+// 1.Rule构造器(最后发给form的结果)
 // ruleType:用户给的规则
 // ruleValue:值
 // errMsg:错误信息
@@ -231,36 +212,57 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
     return errMsgs[item]
 }
 
-function getValItem(ruleValidate) {
-    var item_ = []; //需要验证的项目
-    for (let j in ruleValidate) {
+function getValItem(rule) {
+    var item_ = []; //每个验证项需要去校验的规则数组列表["noEmpty", "min", "max"]
+    for (let j in rule) {
         item_.push(j)
-    }
+	}
     return item_;
 }
 
 function findEleByName(elements, filter) {
     let result;
     for (let i = 0; i < elements.length; i++) { //获取所有需要验证项
-        var prop = elements[i];
+		var prop = elements[i];
         if (filter === prop.name) {
-            result = i;
+			result = i;
             break;
         }
     }
     return result;
 }
 
+function split(value, rule, item) {
+	// _v 以rule指定格式的切割形式将value切割成数组
+    let splitChar = rule.splitChar || '';
+    let _v = value.split(splitChar);//value切成数组
+    let res = [];
+    for (let i in rule.splits) {
+		let s = rule.splits[i];//当前循环项的验证规则
+		let _va = '';
+        if (_v && _v.length > 0 && _v[s.index - 1]) {
+            _va = _v[s.index - 1];
+        }
+        res.push({
+            value: _va,//每项的value
+            name: item + '.' + i,
+            rules: s
+		})
+    }
+    return res;
+}
+
+
 function va() {
     var vm = vnode_.context //当前的vue实例
-    var ruleValidate = vm.ruleValidate; //验证规则
+    var ruleValidate = vm.ruleValidate; //验证规则列表
     var item_form = binding_.expression; //model到哪个表单里
-    var formData = vm[item_form]; //表单数据
-    var formName = []; //需要验证的表单名称
-    var formMsg = []; //需要验证的表单消息
+    var formData = vm[item_form]; //整个表单的key:value列表
+    var formName = []; //需要验证的表单列表
+    var formMsg = []; // 报错时需要显示给用户的验证项的名字列表
     var formDOM = el_; //获取表单DOM里面的所有表单
     var el_dom = []; //获取每一项的DOM
-    var optionalRule = [];
+    var optionalRule = [];//最终整个表的验证结果
     assert(formDOM, '未设置需要验证哪个表单 <form v-va="xxx"></form>')
     assert(formData, '未设置表单信息 ruleValidate:{}')
     if (formDOM.attributes["errClass"]) { //获取错误的class
@@ -279,21 +281,28 @@ function va() {
         }
     }
 
+    //formName 验证项列表
+    //formData 整个表单的key:value列表
+	//ruleValidate 验证规则列表
+	//rule 各验证项规则
+    //value_ 验证项的value值
+    //item_ 每个验证项需要去校验的规则数组列表["noEmpty", "min", "max"]
+	//itemname 当前循环的这个验证项的名称
     for (let i = 0; i < formName.length; i++) {
-        let rule = ruleValidate[formName[i]];
-        if (ruleValidate[formName[i]]) { //验证规则
-            var value_ = '';
-            if (rule && formData[formName[i]] != null) {
-                value_ = formData[formName[i]];
+		let itemname = formName[i];
+        let rule = ruleValidate[itemname];
+        if (rule) { 
+            let value_ = '';
+            if (rule && formData[itemname] != null) {
+                value_ = formData[itemname];
             }
-            var item_ = getValItem(ruleValidate[formName[i]]);
-            var itemname = formName[i];
-            optionalRule[itemname] = new Rule(ruleValidate[itemname], value_, formMsg[i], item_, formData, itemname, el_dom[i]);
+			let item_ = getValItem(rule);
+            optionalRule[itemname] = new Rule(rule, value_, formMsg[i], item_, formData, itemname, el_dom[i]);
             if (rule.split) {
-                let extalItems = split(value_, rule.split, itemname);
+				let extalItems = split(value_, rule.split, itemname);
                 extalItems.forEach(function(ele, index) {
-                    let _sitem = getValItem(ele.rules);
-                    let extralItemIndex = findEleByName(el_dom, ele.name);
+					let _sitem = getValItem(ele.rules);
+					let extralItemIndex = findEleByName(el_dom, ele.name);
                     optionalRule[ele.name] = new Rule(ele.rules, ele.value, formMsg[extralItemIndex], _sitem, formData, ele.name, el_dom[extralItemIndex]);
                 });
             }
