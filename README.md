@@ -3,8 +3,8 @@
 Vue.use(axva,'pt'); //第二个参数接收设置报错语言(默认是中文)
 
 ```
-<form v-va='form' errClass='err' :propCheck="propCheck">
-    <input type="email" v-model="form.email" prop="email,Email" placeholder="Email" autofocus/>
+<form v-va='form' errClass='err' propCheck="blur">
+    <input type="email" v-model="form.email" prop="email,Email" placeholder="Email" @blur="blur(email)"/>
 </form>
 
 data(){
@@ -12,11 +12,9 @@ data(){
         ruleValidate:{
             email: {noEmpty: true,min:8,type:'Number'},
         },
-        propCheck: 'false',
     }
 }
 isPass() {
-    this.propCheck = 'true';
     var isPass = this.$axva();
     if (!isPass.validate) {
         this.$tip(isPass.errMsg);
@@ -24,11 +22,14 @@ isPass() {
         this.getAjax();
     }
 },
+blur(n){
+    this.$axva_blur(n);
+}
 ```
 
 errClass:设置错误提示的class,设置后会添加自定义的class,如果不设置,默认是往下添加错误的DOM
 
-propCheck:设置校验方式,设置后点击确认按钮后才验证整个表单,如果不设置,默认是一进入就验证表单
+propCheck:设置校验方式(不设置默认quick) 参数://quick马上检验 //submit提交检验 //blur离焦校验和提交校验(设置校验方式为blur的话需要每个input设置一个离焦事件,并触发$axva_blur这个事件传入input的Name)
 
 prop:('需要验证的项目字段名','显示的报错项目名称')
 

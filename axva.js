@@ -1,13 +1,13 @@
 // 给错误的dom添加错误class
 function addClass(dom, errClass) {
-    var hasClass = !!dom.className.match(errClass)
+    var hasClass = !!dom.className.match(errClass);
     if (!hasClass) {
         dom.className += ' ' + errClass;
     }
 }
 // 检验正确后去除错误class
 function removeClass(dom, errClass) {
-    var hasClass = !!dom.className.match(errClass)
+    var hasClass = !!dom.className.match(errClass);
     if (hasClass) {
         dom.className = dom.className.replace(errClass, '');
     }
@@ -20,8 +20,8 @@ function appendChild(dom, errMsg, formName) {
         dom.className += 'axva-' + formName;
         var p = document.createElement("p");
         p.innerHTML = errMsg;
-        p.setAttribute('class', 'axva-' + formName + '-err')
-        dom.parentNode.insertBefore(p, dom.nextSibling)
+        p.setAttribute('class', 'axva-err');
+        dom.parentNode.insertBefore(p, dom.nextSibling);
     }
 }
 // 没给class的话默认显示错误DOM,检验正确的话去掉DOM
@@ -36,30 +36,29 @@ function removeChild(dom, errMsg, formName) {
 
 //常用正则
 var regList = {
-    ImgCode: /^[0-9a-zA-Z]{4}$/,
-    SmsCode: /^\d{4}$/,//验证码是否4位数
-    MailCode: /^\d{4}$/,//验证码是否4位数
-    UserName: /^[\w|\d]{4,16}$/,//用户名4-16位
-    Password: /^[\w!@#$%^&*.]{6,16}$/,//密码6-16位
-    Mobile: /^1[3|4|5|7|8]\d{9}$/,//手机号
-    RealName: /^[\u4e00-\u9fa5|·]{2,16}$|^[a-zA-Z|\s]{2,20}$/,
-    BankNum: /^\d{10,19}$/,//银行卡号码
+    ImgCode: /^[0-9a-zA-Z]{4}$/, //图片验证码是否4位数
+    SmsCode: /^\d{4}$/, //短信验证码是否4位数字
+    MailCode: /^\d{4}$/, //邮件验证码是否4位数字
+    UserName: /^[\w|\d]{4,16}$/, //用户名4-16位
+    Password: /^[\w!@#$%^&*.]{6,16}$/, //密码6-16位
+    Mobile: /^1[3|4|5|7|8]\d{9}$/, //手机号格式
+    RealName: /^[\u4e00-\u9fa5|·]{2,16}$|^[a-zA-Z|\s]{2,20}$/, //用户名格式
+    BankNum: /^\d{10,19}$/, //银行卡号码格式
     Money: /^([1-9]\d*|[0-9]\d*\.\d{1,2}|0)$/,
-    Answer: /^\S+$/,
-    Mail: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,//邮箱
-    Number: /^\d+$/,//必须数字
+    Answer: /^\S+$/, //非空白字符
+    Mail: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/, //邮箱格式
+    Number: /^\d+$/, //必须数字
 }
 
-// 4.检测
-//检测非空
+// 4.检测 检测非空
 function noEmpty(value) {
     return value.toString().trim() ? true : false
 }
-//检测最大值
+//检测最大值length
 function max(value, rule) {
     return value.length <= rule ? true : false;
 }
-//检测最小值
+//检测最小值length
 function min(value, rule) {
     return value.length >= rule ? true : false;
 }
@@ -104,7 +103,6 @@ function include(value, rule, ruleType, formData) {
     }
 }
 
-
 // 断言函数
 function assert(condition, message) {
     if (!condition) {
@@ -112,13 +110,7 @@ function assert(condition, message) {
     }
 }
 
-
-
-// 1.Rule构造器(最后发给form的结果)
-// ruleType:用户给的规则
-// ruleValue:值
-// errMsg:错误信息
-// check:需要验证的项目
+// 1.Rule构造器(最后发给form的结果) ruleType:用户给的规则 ruleValue:值 errMsg:错误信息 check:需要验证的项目
 // formData:整个表信息
 function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
     var chk_ = chk(check, ruleType, ruleValue, errMsg, formData, formName);
@@ -128,12 +120,21 @@ function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
     this.ruleType = ruleType;
     this.ruleValue = ruleValue;
     this.ruleName = formName;
-    if (canCheck === 'true') {
-        if (errClass) { //有给错误class的话,如校验结果为false添加class
-            this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
-        } else { //否则默认添加错误提示dom
-            this.errMsg ? appendChild(dom_, chk_[1], formName) : removeChild(dom_, chk_[1], formName);
+    if (canCheck) {
+        this.errMsg = addErr(dom_,this.errMsg,chk_[1],formName);
+    }else if(alone&&alone.indexOf(formName)!==-1){
+        this.errMsg = addErr(dom_,this.errMsg,chk_[1],formName);
+    }
+}
+
+function addErr(itemDOM,itemErr,itemCHK,itemFORMNAME){
+    if (errClass) { //有给错误class的话,如校验结果为false添加class
+        itemErr ? addClass(itemDOM, errClass) : removeClass(itemDOM, errClass);
+        if(!itemErr){
+            alone.splice(alone.indexOf(itemFORMNAME),1);
         }
+    } else { //否则默认添加错误提示dom
+        itemErr ? appendChild(itemDOM, itemCHK, itemFORMNAME) : removeChild(itemDOM, itemCHK, itemFORMNAME);
     }
 }
 
@@ -142,7 +143,7 @@ function chk(check, ruleType, ruleValue, errMsg, formData, formName) {
     var vaResult = {};
     var firstErr = null;
     var pass = true;
-    check.forEach(function(item) {
+    check.forEach(function (item) {
         var isPass = checkRule(item, ruleType, ruleValue, formData);
         vaResult[item] = isPass;
         if (firstErr === null && isPass === false) {
@@ -191,7 +192,7 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
             pattern: `${errMsg}${ruleType.message}`,
             accepted: `${errMsg}${ruleType.message}`,
             other: `${errMsg}${ruleType.message}`,
-            include: `${errMsg}${ruleType.message}`,
+            include: `${errMsg}${ruleType.message}`
         }
     } else if (local === 'pt') {
         var errMsgs = {
@@ -206,7 +207,7 @@ function getErrMsg(item, errMsg, ruleValue, ruleType) {
             pattern: `<b>${errMsg}</b> ${ruleType.message}`,
             accepted: `<b>${errMsg}</b> ${ruleType.message}`,
             other: `<b>${errMsg}</b> ${ruleType.message}`,
-            include: `<b>${errMsg}</b> ${ruleType.message}`,
+            include: `<b>${errMsg}</b> ${ruleType.message}`
         }
     }
     return errMsgs[item]
@@ -216,16 +217,16 @@ function getValItem(rule) {
     var item_ = []; //每个验证项需要去校验的规则数组列表["noEmpty", "min", "max"]
     for (let j in rule) {
         item_.push(j)
-	}
+    }
     return item_;
 }
 
 function findEleByName(elements, filter) {
     let result;
     for (let i = 0; i < elements.length; i++) { //获取所有需要验证项
-		var prop = elements[i];
+        var prop = elements[i];
         if (filter === prop.name) {
-			result = i;
+            result = i;
             break;
         }
     }
@@ -233,27 +234,25 @@ function findEleByName(elements, filter) {
 }
 
 function split(value, rule, item) {
-	// _v 以rule指定格式的切割形式将value切割成数组
+    // _v 以rule指定格式的切割形式将value切割成数组
     let splitChar = rule.splitChar || '';
-    let _v = value.split(splitChar);//value切成数组
+    let _v = value.split(splitChar); //value切成数组
     let res = [];
     for (let i in rule.splits) {
-		let s = rule.splits[i];//当前循环项的验证规则
-		let _va = '';
+        let s = rule.splits[i]; //当前循环项的验证规则
+        let _va = '';
         if (_v && _v.length > 0 && _v[s.index - 1]) {
             _va = _v[s.index - 1];
         }
         res.push({
-            value: _va,//每项的value
+            value: _va, //每项的value
             name: item + '.' + i,
             rules: s
-		})
+        })
     }
     return res;
 }
-
-
-function va() {
+function va(alone_) {
     var vm = vnode_.context //当前的vue实例
     var ruleValidate = vm.ruleValidate; //验证规则列表
     var item_form = binding_.expression; //model到哪个表单里
@@ -262,14 +261,17 @@ function va() {
     var formMsg = []; // 报错时需要显示给用户的验证项的名字列表
     var formDOM = el_; //获取表单DOM里面的所有表单
     var el_dom = []; //获取每一项的DOM
-    var optionalRule = [];//最终整个表的验证结果
+    var optionalRule = []; //最终整个表的验证结果
     assert(formDOM, '未设置需要验证哪个表单 <form v-va="xxx"></form>')
     assert(formData, '未设置表单信息 ruleValidate:{}')
     if (formDOM.attributes["errClass"]) { //获取错误的class
         errClass = formDOM.attributes["errClass"].value;
     }
     if (formDOM.attributes["propCheck"]) {
-        canCheck = formDOM.attributes["propCheck"].value
+        propCheck = formDOM.attributes["propCheck"].value;
+        if (propCheck === 'quick') {
+            canCheck = true;
+        }
     }
     for (let i = 0; i < formDOM.elements.length; i++) { //获取所有需要验证项
         var prop = formDOM.elements[i];
@@ -280,29 +282,27 @@ function va() {
             el_dom.push(prop)
         }
     }
-
-    //formName 验证项列表
-    //formData 整个表单的key:value列表
-	//ruleValidate 验证规则列表
-	//rule 各验证项规则
-    //value_ 验证项的value值
-    //item_ 每个验证项需要去校验的规则数组列表["noEmpty", "min", "max"]
-	//itemname 当前循环的这个验证项的名称
+    // formName 验证项列表 formData 整个表单的key:value列表 ruleValidate 验证规则列表 rule 各验证项规则
+    // value_ 验证项的value值 item_ 每个验证项需要去校验的规则数组列表["noEmpty", "min", "max"] itemname
+    // 当前循环的这个验证项的名称
     for (let i = 0; i < formName.length; i++) {
-		let itemname = formName[i];
+        let itemname = formName[i];
         let rule = ruleValidate[itemname];
-        if (rule) { 
+        if (rule) {
             let value_ = '';
             if (rule && formData[itemname] != null) {
                 value_ = formData[itemname];
             }
-			let item_ = getValItem(rule);
+            let item_ = getValItem(rule);
+            if(!canCheck&&propCheck==='blur'&&alone_&&alone.indexOf(alone_)===-1){
+                alone.push(alone_)
+            }
             optionalRule[itemname] = new Rule(rule, value_, formMsg[i], item_, formData, itemname, el_dom[i]);
             if (rule.split) {
-				let extalItems = split(value_, rule.split, itemname);
-                extalItems.forEach(function(ele, index) {
-					let _sitem = getValItem(ele.rules);
-					let extralItemIndex = findEleByName(el_dom, ele.name);
+                let extalItems = split(value_, rule.split, itemname);
+                extalItems.forEach(function (ele, index) {
+                    let _sitem = getValItem(ele.rules);
+                    let extralItemIndex = findEleByName(el_dom, ele.name);
                     optionalRule[ele.name] = new Rule(ele.rules, ele.value, formMsg[extralItemIndex], _sitem, formData, ele.name, el_dom[extralItemIndex]);
                 });
             }
@@ -322,9 +322,11 @@ function va() {
             validate.errMsg = '';
         }
     }
-    // validate = optionalRule.every(x { //最终结果全部项目是否校验正确
-    //   return x.pass;
-    // });
+    if (!validate.validate) {
+        validate.errList = optionalRule;
+    } else {
+        validate.errList = '';
+    }
 }
 
 var MyPlugin = {};
@@ -338,28 +340,37 @@ var binding_;
 var vnode_;
 var oldVnode_;
 var local;
-var canCheck = 'true';
-MyPlugin.install = function(Vue, options = 'cn') {
+var propCheck = 'quick'; //检查方式(不设置默认quick)//quick马上检验 //submit提交检验 //blur离焦和提交校验
+var alone = [];//为blur时保存当前离焦元素
+var canCheck = false;//检查开关
+
+MyPlugin.install = function (Vue, options = 'cn') {
     local = options;
     Vue.directive('va', {
-            bind(el, binding, vnode, oldVnode) {
-                el_ = el;
-                binding_ = binding;
-                vnode_ = vnode;
-                oldVnode_ = oldVnode;
-                va();
-            },
-            componentUpdated(el, binding, vnode, oldVnode) {
-                el_ = el;
-                binding_ = binding;
-                vnode_ = vnode;
-                oldVnode_ = oldVnode;
-                va();
-            }
-        }),
-        Vue.prototype.$axva = function() {
-            return validate;
+        bind(el, binding, vnode, oldVnode) {
+            el_ = el;
+            binding_ = binding;
+            vnode_ = vnode;
+            oldVnode_ = oldVnode;
+            va();
+        },
+        componentUpdated(el, binding, vnode, oldVnode) {
+            el_ = el;
+            binding_ = binding;
+            vnode_ = vnode;
+            oldVnode_ = oldVnode;
+            va();
         }
+    }),
+    Vue.prototype.$axva = function () {
+        if (propCheck === 'submit' || propCheck === 'blur') {
+            canCheck = true;
+        }
+        return validate;
+    }
+    Vue.prototype.$axva_blur = function (name) {//设置校验方式为blur的话需要每个input设置一个离焦并触发这个事件传入input的Name
+        va(name);
+    }
 }
 
 module.exports = MyPlugin;
