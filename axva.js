@@ -120,23 +120,19 @@ function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
     this.ruleType = ruleType;
     this.ruleValue = ruleValue;
     this.ruleName = formName;
-    if (canCheck) {
-        this.errMsg = addErr(dom_,this.errMsg,chk_[1],formName);
-    }else if(alone&&alone.indexOf(formName)!==-1){
-        this.errMsg = addErr(dom_,this.errMsg,chk_[1],formName);
+    if (propCheck==='true') {
+        if (errClass) { //有给错误class的话,如校验结果为false添加class
+            this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
+        } else { //否则默认添加错误提示dom
+            this.errMsg ? appendChild(dom_, chk_[1], formName) : removeChild(dom_, chk_[1], formName);
+        }
+    }else if(alone){
+        if(alone&&alone.indexOf(formName)!==-1){
+            this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
+        }
     }
 }
 
-function addErr(itemDOM,itemErr,itemCHK,itemFORMNAME){
-    if (errClass) { //有给错误class的话,如校验结果为false添加class
-        itemErr ? addClass(itemDOM, errClass) : removeClass(itemDOM, errClass);
-        if(!itemErr){
-            alone.splice(alone.indexOf(itemFORMNAME),1);
-        }
-    } else { //否则默认添加错误提示dom
-        itemErr ? appendChild(itemDOM, itemCHK, itemFORMNAME) : removeChild(itemDOM, itemCHK, itemFORMNAME);
-    }
-}
 
 // 2.循环需要验证的项目
 function chk(check, ruleType, ruleValue, errMsg, formData, formName) {
@@ -269,9 +265,6 @@ function va(alone_) {
     }
     if (formDOM.attributes["propCheck"]) {
         propCheck = formDOM.attributes["propCheck"].value;
-        if (propCheck === 'quick') {
-            canCheck = true;
-        }
     }
     for (let i = 0; i < formDOM.elements.length; i++) { //获取所有需要验证项
         var prop = formDOM.elements[i];
@@ -294,7 +287,7 @@ function va(alone_) {
                 value_ = formData[itemname];
             }
             let item_ = getValItem(rule);
-            if(!canCheck&&propCheck==='blur'&&alone_&&alone.indexOf(alone_)===-1){
+            if(propCheck==='false'&&alone_&&alone.indexOf(alone_)===-1){
                 alone.push(alone_)
             }
             optionalRule[itemname] = new Rule(rule, value_, formMsg[i], item_, formData, itemname, el_dom[i]);
@@ -322,11 +315,6 @@ function va(alone_) {
             validate.errMsg = '';
         }
     }
-    if (!validate.validate) {
-        validate.errList = optionalRule;
-    } else {
-        validate.errList = '';
-    }
 }
 
 var MyPlugin = {};
@@ -340,9 +328,8 @@ var binding_;
 var vnode_;
 var oldVnode_;
 var local;
-var propCheck = 'quick'; //检查方式(不设置默认quick)//quick马上检验 //submit提交检验 //blur离焦和提交校验
+var propCheck = 'true';
 var alone = [];//为blur时保存当前离焦元素
-var canCheck = false;//检查开关
 
 MyPlugin.install = function (Vue, options = 'cn') {
     local = options;
@@ -363,13 +350,9 @@ MyPlugin.install = function (Vue, options = 'cn') {
         }
     }),
     Vue.prototype.$axva = function () {
-        if (propCheck === 'submit' || propCheck === 'blur') {
-            canCheck = true;
-            va();
-        }
         return validate;
     }
-    Vue.prototype.$axva_blur = function (name) {//设置校验方式为blur的话需要每个input设置一个离焦并触发这个事件传入input的Name
+    Vue.prototype.$axva_blur = function (name) {//可设置离焦校验,需要每个input设置一个离焦并触发这个事件传入input的Name
         va(name);
     }
 }
