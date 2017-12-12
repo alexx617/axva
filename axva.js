@@ -365,6 +365,7 @@ MyPlugin.install = function (Vue, options = 'cn') {
     Vue.prototype.$axva = function () {
         if (propCheck === 'submit' || propCheck === 'blur') {
             canCheck = true;
+            va();
         }
         return validate;
     }
