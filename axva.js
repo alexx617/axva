@@ -64,11 +64,11 @@ function min(value, rule) {
 }
 //检测最大数值
 function NumMax(value, rule) {
-    return value <= rule ? true : false;
+    return Number(value) <= Number(rule) ? true : false;
 }
 //检测最小数值
 function NumMin(value, rule) {
-    return value >= rule ? true : false;
+    return Number(value) >= Number(rule) ? true : false;
 }
 //检测正则
 function type(value, rule) {
