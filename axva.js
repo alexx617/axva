@@ -112,22 +112,22 @@ function assert(condition, message) {
 
 // 1.Rule构造器(最后发给form的结果) ruleType:用户给的规则 ruleValue:值 errMsg:错误信息 check:需要验证的项目
 // formData:整个表信息
-function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
-    var chk_ = chk(check, ruleType, ruleValue, errMsg, formData, formName);
+function Rule(opt) {
+    var chk_ = chk(opt);
     this.check = chk_[0];
     this.errMsg = chk_[1];
     this.pass = chk_[2];
-    this.ruleType = ruleType;
-    this.ruleValue = ruleValue;
-    this.ruleName = formName;
-    if (propCheck==='true') {
-        if (errClass) { //有给错误class的话,如校验结果为false添加class
-            this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
+    this.ruleType = opt.ruleType;
+    this.ruleValue = opt.ruleValue;
+    this.ruleName = opt.formName;
+    if (opt.propCheck==1) {
+        if (opt.errClass) { //有给错误class的话,如校验结果为false添加class
+            this.errMsg ? addClass(opt.dom_,opt.errClass) : removeClass(opt.dom_, opt.errClass);
         } else { //否则默认添加错误提示dom
-            this.errMsg ? appendChild(dom_, chk_[1], formName) : removeChild(dom_, chk_[1], formName);
+            this.errMsg ? appendChild(opt.dom_, chk_[1], opt.formName) : removeChild(opt.dom_, chk_[1], opt.formName);
         }
-    }else if(alone){
-        if(alone&&alone.indexOf(formName)!==-1){
+    }else if(opt.alone){
+        if(aloneBox&&aloneBox.indexOf(formName)!==-1){
             this.errMsg ? addClass(dom_, errClass) : removeClass(dom_, errClass);
         }
     }
@@ -135,15 +135,15 @@ function Rule(ruleType, ruleValue, errMsg, check, formData, formName, dom_) {
 
 
 // 2.循环需要验证的项目
-function chk(check, ruleType, ruleValue, errMsg, formData, formName) {
+function chk(opt) {
     var vaResult = {};
     var firstErr = null;
     var pass = true;
-    check.forEach(function (item) {
-        var isPass = checkRule(item, ruleType, ruleValue, formData);
+    opt.check.forEach(item =>{
+        var isPass = checkRule(item, opt.ruleType, opt.ruleValue, opt.formData);
         vaResult[item] = isPass;
         if (firstErr === null && isPass === false) {
-            firstErr = getErrMsg(item, errMsg, ruleValue, ruleType);
+            firstErr = getErrMsg({item, errMsg:opt.errMsg, ruleValue:opt.ruleValue, ruleType:opt.ruleType,local:opt.local});
             pass = false;
         }
     })
@@ -174,39 +174,39 @@ function checkRule(item, ruleType, ruleValue, formData) {
 }
 
 // 5.获得不同的报错信息
-function getErrMsg(item, errMsg, ruleValue, ruleType) {
-    if (local === 'cn') {
+function getErrMsg(opt) {
+    if (opt.local === 'cn') {
         var errMsgs = {
-            type: `${errMsg}格式不正确`,
-            noEmpty: `${errMsg}不能为空`,
-            max: `${errMsg}不能大于${ruleType[item]}`,
-            min: `${errMsg}不能小于${ruleType[item]}`,
-            NumMax: `${errMsg}不能大于${ruleType[item]}`,
-            NumMin: `${errMsg}不能小于${ruleType[item]}`,
-            equal: `两次输入的${errMsg}不相同`,
-            unequal: `两次输入的${errMsg}不能相同`,
-            pattern: `${errMsg}${ruleType.message}`,
-            accepted: `${errMsg}${ruleType.message}`,
-            other: `${errMsg}${ruleType.message}`,
-            include: `${errMsg}${ruleType.message}`
+            type: `${opt.errMsg}格式不正确`,
+            noEmpty: `${opt.errMsg}不能为空`,
+            max: `${opt.errMsg}不能大于${opt.ruleType[opt.item]}`,
+            min: `${opt.errMsg}不能小于${opt.ruleType[opt.item]}`,
+            NumMax: `${opt.errMsg}不能大于${opt.ruleType[opt.item]}`,
+            NumMin: `${opt.errMsg}不能小于${opt.ruleType[opt.item]}`,
+            equal: `两次输入的${opt.errMsg}不相同`,
+            unequal: `两次输入的${opt.errMsg}不能相同`,
+            pattern: `${opt.errMsg}${opt.ruleType.message}`,
+            accepted: `${opt.errMsg}${opt.ruleType.message}`,
+            other: `${opt.errMsg}${opt.ruleType.message}`,
+            include: `${opt.errMsg}${opt.ruleType.message}`
         }
-    } else if (local === 'pt') {
+    } else if (opt.local === 'pt') {
         var errMsgs = {
-            type: `Formato incorreto <b>${errMsg}</b>`,
-            noEmpty: `<b>${errMsg}</b> Não pode ser vazio`,
-            max: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
-            min: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
-            NumMax: `<b>${errMsg}</b> Máximo de ${ruleType[item]}`,
-            NumMin: `<b>${errMsg}</b> Mínimo de ${ruleType[item]}`,
-            equal: `inserir <b>${errMsg}</b> por duas vezes não é equal`,
-            unequal: `inserir <b>${errMsg}</b> por duas vezes não pode ser equal`,
-            pattern: `<b>${errMsg}</b> ${ruleType.message}`,
-            accepted: `<b>${errMsg}</b> ${ruleType.message}`,
-            other: `<b>${errMsg}</b> ${ruleType.message}`,
-            include: `<b>${errMsg}</b> ${ruleType.message}`
+            type: `Formato incorreto <b>${opt.errMsg}</b>`,
+            noEmpty: `<b>${opt.errMsg}</b> Não pode ser vazio`,
+            max: `<b>${opt.errMsg}</b> Máximo de ${opt.ruleType[opt.item]}`,
+            min: `<b>${opt.errMsg}</b> Mínimo de ${opt.ruleType[opt.item]}`,
+            NumMax: `<b>${opt.errMsg}</b> Máximo de ${opt.ruleType[opt.item]}`,
+            NumMin: `<b>${opt.errMsg}</b> Mínimo de ${opt.ruleType[opt.item]}`,
+            equal: `inserir <b>${opt.errMsg}</b> por duas vezes não é equal`,
+            unequal: `inserir <b>${opt.errMsg}</b> por duas vezes não pode ser equal`,
+            pattern: `<b>${opt.errMsg}</b> ${opt.ruleType.message}`,
+            accepted: `<b>${opt.errMsg}</b> ${opt.ruleType.message}`,
+            other: `<b>${opt.errMsg}</b> ${opt.ruleType.message}`,
+            include: `<b>${opt.errMsg}</b> ${opt.ruleType.message}`
         }
     }
-    return errMsgs[item]
+    return errMsgs[opt.item]
 }
 
 function getValItem(rule) {
@@ -248,16 +248,17 @@ function split(value, rule, item) {
     }
     return res;
 }
-function va(alone_) {
-    var vm = vnode_.context //当前的vue实例
-    var ruleValidate = vm.ruleValidate; //验证规则列表
-    var item_form = binding_.expression; //model到哪个表单里
-    var formData = vm[item_form]; //整个表单的key:value列表
-    var formName = []; //需要验证的表单列表
-    var formMsg = []; // 报错时需要显示给用户的验证项的名字列表
-    var formDOM = el_; //获取表单DOM里面的所有表单
-    var el_dom = []; //获取每一项的DOM
-    var optionalRule = []; //最终整个表的验证结果
+function va(ops) {
+    let vm = ops.vnode.context //当前的vue实例
+    let ruleValidate = vm.ruleValidate; //验证规则列表
+    let item_form = ops.binding.expression; //model到哪个表单里
+    let formData = vm[item_form]; //整个表单的key:value列表
+    let formName = []; //需要验证的表单列表
+    let formMsg = []; // 报错时需要显示给用户的验证项的名字列表
+    let formDOM = ops.el; //获取表单DOM里面的所有表单
+    let el_dom = []; //获取每一项的DOM
+    let optionalRule = []; //最终整个表的验证结果
+    let propCheck = 0;
     assert(formDOM, '未设置需要验证哪个表单 <form v-va="xxx"></form>')
     assert(formData, '未设置表单信息 ruleValidate:{}')
     if (formDOM.attributes["errClass"]) { //获取错误的class
@@ -266,10 +267,11 @@ function va(alone_) {
     if (formDOM.attributes["propCheck"]) {
         propCheck = formDOM.attributes["propCheck"].value;
     }
+    
     for (let i = 0; i < formDOM.elements.length; i++) { //获取所有需要验证项
-        var prop = formDOM.elements[i];
+        let prop = formDOM.elements[i];
         if (prop.attributes["prop"]) {
-            var item = prop.attributes["prop"].value.split(',');
+            let item = prop.attributes["prop"].value.split(',');
             formName.push(item[0]);
             formMsg.push(item[1]);
             el_dom.push(prop)
@@ -287,23 +289,23 @@ function va(alone_) {
                 value_ = formData[itemname];
             }
             let item_ = getValItem(rule);
-            if(propCheck==='false'&&alone_&&alone.indexOf(alone_)===-1){
-                alone.push(alone_)
+            if(propCheck==0&&ops.alone_&&aloneBox.indexOf(ops.alone_)===-1){
+                aloneBox.push(ops.alone_)
             }
-            optionalRule[itemname] = new Rule(rule, value_, formMsg[i], item_, formData, itemname, el_dom[i]);
+            optionalRule[itemname] = new Rule({ruleType:rule, ruleValue:value_, errMsg:formMsg[i], check:item_, formData:formData, formName:itemname, dom_:el_dom[i],local:ops.local,propCheck:propCheck,errClass:errClass,alone_:ops.alone_});
             if (rule.split) {
                 let extalItems = split(value_, rule.split, itemname);
-                extalItems.forEach(function (ele, index) {
+                extalItems.forEach( (ele, index) => {
                     let _sitem = getValItem(ele.rules);
                     let extralItemIndex = findEleByName(el_dom, ele.name);
-                    optionalRule[ele.name] = new Rule(ele.rules, ele.value, formMsg[extralItemIndex], _sitem, formData, ele.name, el_dom[extralItemIndex]);
+                    optionalRule[ele.name] = new Rule({ruleType:ele.rules, ruleValue:ele.value, errMsg:formMsg[extralItemIndex], check:_sitem, formData:formData, formName:ele.name, dom_:el_dom[extralItemIndex],local:ops.local,propCheck:propCheck,errClass:errClass});
                 });
             }
         }
     }
     // console.log(optionalRule)
     vm[item_form + '_valid'] = optionalRule;
-    var firstErr = null;
+    let firstErr = null;
     for (let i in optionalRule) {
         if (firstErr === null && optionalRule[i].pass === false) {
             validate.validate = false;
@@ -323,37 +325,24 @@ var validate = {
     validate: '',
     errMsg: null
 }; //最终结果
-var el_;
-var binding_;
-var vnode_;
-var oldVnode_;
-var local;
-var propCheck = 'true';
-var alone = [];//为blur时保存当前离焦元素
 
-MyPlugin.install = function (Vue, options = 'cn') {
-    local = options;
+
+let aloneBox = [];//为blur时保存当前离焦元素
+
+MyPlugin.install =  (Vue, local = 'cn') => {
     Vue.directive('va', {
         bind(el, binding, vnode, oldVnode) {
-            el_ = el;
-            binding_ = binding;
-            vnode_ = vnode;
-            oldVnode_ = oldVnode;
-            va();
+            va({el,binding, vnode, oldVnode,local});
         },
         componentUpdated(el, binding, vnode, oldVnode) {
-            el_ = el;
-            binding_ = binding;
-            vnode_ = vnode;
-            oldVnode_ = oldVnode;
-            va();
+            va({el,binding, vnode, oldVnode,local});
         }
     }),
-    Vue.prototype.$axva = function () {
+    Vue.prototype.$axva = () => {
         return validate;
     }
-    Vue.prototype.$axva_blur = function (name) {//可设置离焦校验,需要每个input设置一个离焦并触发这个事件传入input的Name
-        va(name);
+    Vue.prototype.$axva_blur = alone => {//可设置离焦校验,需要每个input设置一个离焦并触发这个事件传入input的Name
+        va({alone});
     }
 }
 
