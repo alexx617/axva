@@ -12,11 +12,11 @@ data(){
         ruleValidate:{
             email: {noEmpty: true,min:8,type:'Number'},
         },
-        propCheck:'false'//这里需要是字符串
+        propCheck:0
     }
 }
 isPass() {
-    this.propCheck = 'true';
+    this.propCheck = 1;
     var isPass = this.$axva();
     if (!isPass.validate) {
         this.$tip(isPass.errMsg);
@@ -53,8 +53,7 @@ this.$axva():返回验证结果
 检测自定义规则:cpf: { other: checkcpf, message: 'cpf错误' },//other接收一个参数,自定的规则,需要加message
 
 检测是否相等:password: { noEmpty: true, equal: 'password_again', min: 6 },
-
-            password_again: { noEmpty: true, equal: 'password', min: 6 },
+password_again: { noEmpty: true, equal: 'password', min: 6 },
 
 检测是否不相等:'name': { unequal: 'name2' },//unequal接收一个参数,需要对比的值
 
