@@ -325,20 +325,28 @@ var validate = {
     validate: '',
     errMsg: null
 }; //最终结果
-
+let saveBox = {}
 
 let aloneBox = [];//为blur时保存当前离焦元素
 
 MyPlugin.install =  (Vue, local = 'cn') => {
     Vue.directive('va', {
         bind(el, binding, vnode, oldVnode) {
+            saveBox = {el, binding, vnode, oldVnode,local};
             va({el,binding, vnode, oldVnode,local});
         },
         componentUpdated(el, binding, vnode, oldVnode) {
             va({el,binding, vnode, oldVnode,local});
-        }
+        },
+        update (el, binding, vnode, oldVnode) {
+            saveBox = {el, binding, vnode, oldVnode,local};
+            va({el,binding, vnode, oldVnode,local});
+        },
     }),
-    Vue.prototype.$axva = () => {
+    Vue.prototype.$axva = (ruleValidate) => {
+        if(saveBox.local==='cn'){
+            va(saveBox)
+        }
         return validate;
     }
     Vue.prototype.$axva_blur = alone => {//可设置离焦校验,需要每个input设置一个离焦并触发这个事件传入input的Name
